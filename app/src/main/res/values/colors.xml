@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="white">#ffffff</color>
+
+    <color name="k_green">#00ff00</color>
+    <color name="k_decreasing">#18ea15</color>
+    <color name="green">#0f9462</color>
+
+    <color name="light_red">#e82219</color>
+    <color name="red">#EB2219</color>
+    <color name="text_bottom_line_red">#d02119</color>
+    <color name="wave_view_wave_green">#6C1B1A</color>
+
+    <color name="light_gray1">#E2E2E2</color>
+    <color name="light_gray2">#CCCCCC</color>
+    <color name="light_gray3">#C8C8C8</color>
+    <color name="light_gray4">#666666</color>
+    <color name="light_gray5">#4D4D4D</color>
+    <color name="light_gray6">#242326</color>
+    <color name="light_gray7">#080808</color>
+    <color name="black">#000000</color>
+
+    <color name="light_blue">#2FC4FD</color>
+    <color name="blue">#1D58A2</color>
+
+    <color name="k_ma10">#cacb6d</color>
+    <color name="k_ma20">#cf17b5</color>
+
+    <color name="wave_view_selected_wave_red">#85211e</color>
+    <color name="k_min_border">#6b011c</color>
+    <color name="wave_view_progress_red">#6C1B1A</color>
+
+    <color name="wave_view_selected_progress_green">#2f5224</color>
+    <color name="wave_view_selected_wave_green">#253621</color>
+
+
 </resources>

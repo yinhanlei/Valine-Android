@@ -1,10 +1,10 @@
 package com.zcy.valine;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import com.zcy.valine.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
