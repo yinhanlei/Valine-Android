@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/time"
+        android:id="@+id/createdAt_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="时间点"
@@ -26,7 +26,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
@@ -34,12 +34,82 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/createdAt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="10"
                 android:textColor="@color/light_gray5"
                 android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/updatedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/QQAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/insertedAt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/ip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/nick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/ua"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
+            <TextView
+                android:id="@+id/objectId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/light_gray5"
+                android:textSize="@dimen/sp_14" />
+
 
         </LinearLayout>
 

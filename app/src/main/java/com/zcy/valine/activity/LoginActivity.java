@@ -3,6 +3,7 @@ package com.zcy.valine.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,11 +17,19 @@ import com.zcy.valine.R;
 import com.zcy.valine.base.BaseActivity;
 import com.zcy.valine.config.MyConfig;
 
+import cn.leancloud.AVOSCloud;
+import cn.leancloud.AVUser;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+
 /**
  * Created by yinhanlei on 2020/7/5.
  */
 
 public class LoginActivity extends BaseActivity {
+
+    private static final String TAG = "LoginActivity";
+
     private Context context;
     private LinearLayout ll_register_pwd;
     private TextView btn_login, tvBtn_register, btn_back, btn_service;
@@ -49,12 +58,70 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isClickRegister == false) {
-                    //登  录
-                    MyConfig.isLoginSuccess = true;
-                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+                    try {
+                        //登  录
+                        //                        final String uName = edit_login_uername.getText().toString();
+                        //                        final String pwd = edit_login_pwd.getText().toString();
+                        final String uName = "me@xaoxuu.com";
+                        final String pwd = "q";
+                        Log.d(TAG, "uName= " + uName + "  pwd= " + pwd);
+                        if (uName.contains("@") && uName.contains(".com")) {
+                            new Thread(new Runnable() {//网络请求都要放进线程
+                                @Override
+                                public void run() {
+                                    AVUser.loginByEmail(uName, pwd).subscribe(new Observer<AVUser>() {
+                                        public void onSubscribe(Disposable disposable) {
+                                        }
+
+                                        public void onNext(AVUser user) {
+                                            // 登录成功
+                                            Log.d(TAG, "登录成功");
+                                            MyConfig.isLoginSuccess = true;
+                                        }
+
+                                        public void onError(Throwable throwable) {
+                                            // 登录失败（可能是密码错误）
+                                            Log.d(TAG, "邮箱登录失败= " + throwable.getMessage());
+                                        }
+
+                                        public void onComplete() {
+                                        }
+                                    });
+                                }
+                            }).start();
+                        } else {
+                            new Thread(new Runnable() {//网络请求都要放进线程
+                                @Override
+                                public void run() {
+                                    AVUser.logIn(uName, pwd).subscribe(new Observer<AVUser>() {
+                                        public void onSubscribe(Disposable disposable) {
+                                        }
+
+                                        public void onNext(AVUser user) {
+                                            // 登录成功
+                                            Log.d(TAG, "登录成功");
+                                            MyConfig.isLoginSuccess = true;
+                                            //                                Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        public void onError(Throwable throwable) {
+                                            // 登录失败（可能是密码错误）
+                                            Log.d(TAG, "登录失败= " + throwable.getMessage());
+                                            //                                Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        public void onComplete() {
+                                        }
+                                    });
+                                }
+                            }).start();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     finish();
                 } else {
-                    //注  册，注册成功可默认登录成功
+                    //TODO 注  册，注册成功可默认登录成功
                 }
             }
         });

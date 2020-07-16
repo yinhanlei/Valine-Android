@@ -3,6 +3,7 @@ package com.zcy.valine;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +22,17 @@ import com.zcy.valine.config.MyConfig;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.leancloud.AVOSCloud;
+
 /**
  * Created by yinhanlei on 2020/7/5.
  * 应用列表
  */
 
 public class ApplicationActivity extends BaseActivity {
+
+    private static final String TAG = "ApplicationActivity";
+
     private Context context;
 
     //模拟数据
@@ -43,7 +49,7 @@ public class ApplicationActivity extends BaseActivity {
         btn_add = findViewById(R.id.btn_add);
 
         //模拟数据
-        list.add(new ApplicationBean("name1", "id1", "key1"));
+        list.add(new ApplicationBean("测试", "7yIoRlSmfX09vQCERsuWzFnx-MdYXbMMI", "3zCL5GFePTUjwbqLop44QFbr"));
         list.add(new ApplicationBean("name1", "id1", "key1"));
 
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +67,9 @@ public class ApplicationActivity extends BaseActivity {
                 if (MyConfig.isLoginSuccess) {
                     startActivity(new Intent(context, CommentActivity.class));
                 } else {
+                    ApplicationBean bean = list.get(i);
+                    Log.d(TAG, "id= " + bean.getApplicationId() + "  key= " + bean.getApplicationKey());
+                    AVOSCloud.initialize(bean.getApplicationId(), bean.getApplicationKey());
                     startActivity(new Intent(context, LoginActivity.class));
                 }
             }
@@ -112,9 +121,9 @@ public class ApplicationActivity extends BaseActivity {
             private TextView name, id, key;
 
             public ViewHolder(View rootView) {
-                this.name =  rootView.findViewById(R.id.name);
-                this.id =  rootView.findViewById(R.id.id);
-                this.key =  rootView.findViewById(R.id.key);
+                this.name = rootView.findViewById(R.id.name);
+                this.id = rootView.findViewById(R.id.id);
+                this.key = rootView.findViewById(R.id.key);
             }
         }
     }
