@@ -20,6 +20,7 @@
         android:padding="@dimen/dp_10">
 
         <LinearLayout
+            android:id="@+id/ll_item"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -109,7 +110,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/light_gray5"
                 android:textSize="@dimen/sp_14" />
-
 
         </LinearLayout>
 

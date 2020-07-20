@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="选择一个应用"
+            android:text="应用列表"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="添加"
+            android:text="添加应用"
             android:textColor="@color/light_blue"
             android:textSize="@dimen/sp_15" />
 

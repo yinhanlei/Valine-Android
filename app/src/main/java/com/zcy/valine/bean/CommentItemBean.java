@@ -1,10 +1,12 @@
 package com.zcy.valine.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by yhl
  * on 2020/7/6
  */
-public class CommentItemBean {
+public class CommentItemBean implements Serializable {
 
     private String comment;
     private String createdAt;
