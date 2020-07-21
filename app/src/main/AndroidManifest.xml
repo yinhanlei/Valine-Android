@@ -3,6 +3,7 @@
     package="com.zcy.valine">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -15,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ApplicationActivity">
+        <activity android:name="com.zcy.valine.ApplicationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,20 +25,23 @@
         </activity>
 
         <activity
-            android:name=".activity.ApplicationAddActivity"
+            android:name="com.zcy.valine.activity.ApplicationAddActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".activity.LoginActivity"
+            android:name="com.zcy.valine.activity.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommentActivity"
+            android:name="com.zcy.valine.activity.CommentActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommentEditActivity"
+            android:name="com.zcy.valine.activity.CommentEditActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.CommentContentActivity"
+            android:name="com.zcy.valine.activity.CommentContentActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.zcy.valine.activity.ForgetPwdActivity"
             android:screenOrientation="portrait" />
     </application>
 

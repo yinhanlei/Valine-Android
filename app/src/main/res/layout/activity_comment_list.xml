@@ -37,12 +37,67 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_skip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="right"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_pre"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="上一页"
+            android:textColor="@color/light_blue"
+            android:textSize="@dimen/sp_15" />
+
+        <TextView
+            android:id="@+id/tv_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="当前 1 页"
+            android:textColor="@color/light_blue"
+            android:textSize="@dimen/sp_15" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="下一页"
+            android:textColor="@color/light_blue"
+            android:textSize="@dimen/sp_15" />
+
+        <EditText
+            android:id="@+id/edit_skip"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:numeric="integer"
+            android:text="1"
+            android:textColor="@color/light_blue"
+            android:textSize="@dimen/sp_15" />
+
+        <Button
+            android:id="@+id/btn_skip"
+            android:layout_width="@dimen/dp_70"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="跳页"
+            android:textColor="@color/light_blue"
+            android:textSize="@dimen/sp_15" />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listView_comment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20"
         android:divider="@color/light_gray1"
         android:dividerHeight="@dimen/px_30"></ListView>
-
 </LinearLayout>

@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="登  录"
+            android:text="登  录/注  册"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_20"
             android:textStyle="bold" />
@@ -41,12 +41,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:src="@drawable/login_bg_logo" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_100"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -84,6 +86,44 @@
 
                 <ImageView
                     android:id="@+id/btn_umane_del"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="15dp"
+                    android:padding="@dimen/dp_5"
+                    android:src="@drawable/btn_delete" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:text="邮箱"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_15" />
+
+                <EditText
+                    android:id="@+id/edit_register_email"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:hint="请输入邮箱"
+                    android:maxLines="1"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/btn_email_del"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
@@ -184,7 +224,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tvBtn_forgetPwd"
+                android:id="@+id/btn_forgetPwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/tvBtn_register"
@@ -218,9 +258,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_register_service"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center">
+        android:layout_marginTop="@dimen/dp_20"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -233,7 +277,6 @@
             android:layout_height="wrap_content"
             android:text="服务款项"
             android:textColor="@color/light_blue" />
-
 
     </LinearLayout>
 

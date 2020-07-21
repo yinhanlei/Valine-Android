@@ -2,7 +2,6 @@ package com.zcy.valine.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.http.SslCertificate;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,27 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.zcy.valine.R;
 import com.zcy.valine.base.BaseActivity;
-import com.zcy.valine.bean.CommentItemBean;
 import com.zcy.valine.bean.CommentItemDyBean;
 import com.zcy.valine.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cn.leancloud.AVObject;
 import cn.leancloud.AVQuery;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+
+import static com.zcy.valine.config.MyConfig.threadPoolExecutor;
 
 /**
  * Created by yhl
@@ -43,10 +44,16 @@ public class CommentActivity extends BaseActivity {
     private static final String TAG = "CommentActivity";
     private Context context;
     private Handler handler;
-    private TextView btn_back;
+    private TextView btn_back, tv_page;
     private ListView listView_comment;
+    private MyAdapter myAdapter;
+    private LinearLayout ll_skip;
+    private int page = 1;//页数
 
-    public static List<CommentItemDyBean> dynamicComments = new ArrayList<>();//item里的组件是动态的
+    private Button btn_next, btn_pre, btn_skip;
+    private EditText edit_skip;
+
+    private List<CommentItemDyBean> dynamicComments = new ArrayList<>();//item里的组件是动态的
     //    public static List<CommentItemBean> commentList = new ArrayList<>();//item里的组件是固定的
 
     @Override
@@ -57,6 +64,13 @@ public class CommentActivity extends BaseActivity {
         handler = new Handler();
         btn_back = findViewById(R.id.btn_back);
         listView_comment = findViewById(R.id.listView_comment);
+
+        ll_skip = findViewById(R.id.ll_skip);
+        tv_page = findViewById(R.id.tv_page);
+        btn_next = findViewById(R.id.btn_next);
+        btn_pre = findViewById(R.id.btn_pre);
+        edit_skip = findViewById(R.id.edit_skip);
+        btn_skip = findViewById(R.id.btn_skip);
 
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,24 +93,66 @@ public class CommentActivity extends BaseActivity {
         });
 
 
+        btn_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //下一页
+                page++;
+                getData();
+                tv_page.setText("当前 " + page + " 页");
+            }
+        });
+        btn_pre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //上一页
+                if (page > 1) {
+                    page--;
+                    getData();
+                    tv_page.setText("当前 " + page + " 页");
+                }
+            }
+        });
+        btn_skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //跳页
+                String skip = edit_skip.getText().toString();
+                if (skip.equals("")) {
+                    Toast.makeText(context, "请填写页数", Toast.LENGTH_SHORT).show();
+                } else if (skip.equals("0")) {
+                    Toast.makeText(context, "页数不能为0", Toast.LENGTH_SHORT).show();
+                } else {
+                    page = Integer.parseInt(skip);
+                    getData();
+                    tv_page.setText("当前 " + page + " 页");
+                }
+            }
+        });
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //        if (commentList.size() > 0)
-        //            commentList.clear();
+        getData();
+    }
+
+    /**
+     * 请求数据
+     */
+    private void getData() {
         if (dynamicComments.size() > 0)
             dynamicComments.clear();
-
-        /**
-         * 请求数据
-         */
-        new Thread(new Runnable() {//网络请求都要放进线程
+        threadPoolExecutor.execute(new Runnable() {//网络请求都要放进线程
             @Override
             public void run() {
                 AVQuery<AVObject> query = new AVQuery<>("Comment");//Comment就是存储的表名
                 query.orderByDescending("createdAt");
+                query.limit(10);
+                if (page > 1)
+                    query.skip(10 * (page - 1));
                 query.findInBackground().subscribe(new Observer<List<AVObject>>() {
                     public void onSubscribe(Disposable disposable) {
                     }
@@ -114,9 +170,7 @@ public class CommentActivity extends BaseActivity {
                     }
                 });
             }
-        }).start();
-
-
+        });
     }
 
     /**
@@ -124,7 +178,7 @@ public class CommentActivity extends BaseActivity {
      *
      * @param comments
      */
-    private void setData1(List<AVObject> comments) {
+    private void setData1(final List<AVObject> comments) {
         for (AVObject comment : comments) {
             //            Log.d(TAG, "comment= " + comment);
             JSONObject commentJson = JSONObject.parseObject(JSONObject.toJSONString(comment));
@@ -134,7 +188,13 @@ public class CommentActivity extends BaseActivity {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                listView_comment.setAdapter(new MyAdapter1());
+                if (myAdapter == null)
+                    myAdapter = new MyAdapter();
+                listView_comment.setAdapter(myAdapter);
+                if (page == 1 && comments.size() < 10)
+                    ll_skip.setVisibility(View.GONE);
+                if (page == 1 && comments.size() == 10)
+                    ll_skip.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -142,7 +202,7 @@ public class CommentActivity extends BaseActivity {
     /**
      * 自定义适配器，动态
      */
-    private class MyAdapter1 extends BaseAdapter {
+    private class MyAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {

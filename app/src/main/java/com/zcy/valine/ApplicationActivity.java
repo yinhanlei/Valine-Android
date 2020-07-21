@@ -11,13 +11,17 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zcy.valine.activity.ApplicationAddActivity;
 import com.zcy.valine.activity.CommentActivity;
+import com.zcy.valine.activity.CommentEditActivity;
 import com.zcy.valine.activity.LoginActivity;
 import com.zcy.valine.base.BaseActivity;
 import com.zcy.valine.bean.ApplicationBean;
 import com.zcy.valine.config.MyConfig;
+import com.zcy.valine.utils.PermissionsUtils;
+import com.zcy.valine.utils.SerializableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +37,13 @@ public class ApplicationActivity extends BaseActivity {
 
     private static final String TAG = "ApplicationActivity";
 
-    private Context context;
+    public static final String appListPath = "/sdcard/valine_application.txt";
+    public static List<ApplicationBean> applicationList = new ArrayList<>();
 
-    //模拟数据
-    private List<ApplicationBean> list = new ArrayList<>();
+    private Context context;
     private ListView listView_appliaction;
     private TextView btn_add;
+    private MyAdapter myAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +52,7 @@ public class ApplicationActivity extends BaseActivity {
         context = this;
         listView_appliaction = findViewById(R.id.listView_appliaction);
         btn_add = findViewById(R.id.btn_add);
-
-        //模拟数据
-        list.add(new ApplicationBean("测试", "7yIoRlSmfX09vQCERsuWzFnx-MdYXbMMI", "3zCL5GFePTUjwbqLop44QFbr"));
-        list.add(new ApplicationBean("name1", "id1", "key1"));
-
+        PermissionsUtils.verifyStoragePermissions(ApplicationActivity.this);
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,18 +65,38 @@ public class ApplicationActivity extends BaseActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //点击跳转
-                if (MyConfig.isLoginSuccess) {
+                ApplicationBean bean = applicationList.get(i);
+                //                    Log.d(TAG, "id= " + bean.getApplicationId() + "  key= " + bean.getApplicationKey());
+                if (MyConfig.loginMap != null && MyConfig.loginMap.size() > 0 && MyConfig.loginMap.containsKey(bean.getApplicationId()) && MyConfig.loginMap.get(bean.getApplicationId())) {
                     startActivity(new Intent(context, CommentActivity.class));
                 } else {
-                    ApplicationBean bean = list.get(i);
-                    Log.d(TAG, "id= " + bean.getApplicationId() + "  key= " + bean.getApplicationKey());
                     AVOSCloud.initialize(bean.getApplicationId(), bean.getApplicationKey());
-                    startActivity(new Intent(context, LoginActivity.class));
+                    Intent it = new Intent(context, LoginActivity.class);
+                    it.putExtra("id", bean.getApplicationId());
+                    startActivity(it);
                 }
             }
         });
 
-        listView_appliaction.setAdapter(new MyAdapter());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (applicationList.size() > 0)
+            applicationList.clear();
+        applicationList = (List<ApplicationBean>) SerializableUtils.getDeserializeObject(appListPath);
+        if (applicationList == null || applicationList.size() == 0) {
+            applicationList = new ArrayList<>();
+            Toast.makeText(context, "请新增一个应用", Toast.LENGTH_SHORT).show();
+            applicationList.add(new ApplicationBean("测试", "7yIoRlSmfX09vQCERsuWzFnx-MdYXbMMI", "3zCL5GFePTUjwbqLop44QFbr"));
+            applicationList.add(new ApplicationBean("xcy正式", "FIKAgh6n0pUM08JXxhJHChVQ-MdYXbMMI", "RJGiOYFc1fBvfox4frBPpRzU"));
+            SerializableUtils.serializableObjectToFile(applicationList, appListPath);
+        } else {
+            if (myAdapter == null)
+                myAdapter = new MyAdapter();
+            listView_appliaction.setAdapter(myAdapter);
+        }
 
     }
 
@@ -86,12 +107,12 @@ public class ApplicationActivity extends BaseActivity {
 
         @Override
         public int getCount() {
-            return list.size();
+            return applicationList.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return list.get(position);
+            return applicationList.get(position);
         }
 
         @Override
@@ -109,21 +130,32 @@ public class ApplicationActivity extends BaseActivity {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            ApplicationBean bean = list.get(position);
-            viewHolder.name.setText(bean.getApplicationName());
-            viewHolder.id.setText(bean.getApplicationId());
-            viewHolder.key.setText(bean.getApplicationKey());
+            final ApplicationBean bean = applicationList.get(position);
+            viewHolder.name.setText("name：" + bean.getApplicationName());
+            viewHolder.id.setText("id：" + bean.getApplicationId());
+            viewHolder.key.setText("key：" + bean.getApplicationKey());
+            viewHolder.btn_del.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //删除应用
+                    applicationList.remove(bean);
+                    myAdapter.notifyDataSetChanged();
+                    SerializableUtils.serializableObjectToFile(applicationList, appListPath);
+                    Toast.makeText(context, "删除应用成功", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             return convertView;
         }
 
         public class ViewHolder {
-            private TextView name, id, key;
+            private TextView name, id, key, btn_del;
 
             public ViewHolder(View rootView) {
                 this.name = rootView.findViewById(R.id.name);
                 this.id = rootView.findViewById(R.id.id);
                 this.key = rootView.findViewById(R.id.key);
+                this.btn_del = rootView.findViewById(R.id.btn_del);
             }
         }
     }

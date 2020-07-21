@@ -20,11 +20,12 @@ import androidx.annotation.Nullable;
 import com.alibaba.fastjson.JSONObject;
 import com.zcy.valine.R;
 import com.zcy.valine.base.BaseActivity;
-import com.zcy.valine.bean.CommentItemDyBean;
 
 import java.util.Set;
 
 import cn.leancloud.AVObject;
+
+import static com.zcy.valine.config.MyConfig.threadPoolExecutor;
 
 /**
  * Created by yhl
@@ -76,7 +77,7 @@ public class CommentEditActivity extends BaseActivity {
                 final String objectIdStr = objectId;
                 Log.d(TAG, "del objectIdStr= " + objectIdStr);
                 //1 删除接口
-                new Thread(new Runnable() {
+                threadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -95,7 +96,7 @@ public class CommentEditActivity extends BaseActivity {
                             Log.d(TAG, "Exception= " + e.getMessage());
                         }
                     }
-                }).start();
+                });
             }
         });
 

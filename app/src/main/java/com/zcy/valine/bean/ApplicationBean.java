@@ -1,11 +1,13 @@
 package com.zcy.valine.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by yinhanlei on 2020/7/5.
  * 应用列表的实体
  */
 
-public class ApplicationBean {
+public class ApplicationBean implements Serializable {
 
     private String applicationName;
     private String applicationId;

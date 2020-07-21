@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +15,8 @@ import com.zcy.valine.R;
 import com.zcy.valine.base.BaseActivity;
 
 import cn.leancloud.AVObject;
+
+import static com.zcy.valine.config.MyConfig.threadPoolExecutor;
 
 /**
  * Created by yhl
@@ -66,7 +67,7 @@ public class CommentContentActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 //1上传修改内容
-                new Thread(new Runnable() {
+                threadPoolExecutor.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -93,7 +94,7 @@ public class CommentContentActivity extends BaseActivity {
                             Log.d(TAG, "Exception= " + e.getMessage());
                         }
                     }
-                }).start();
+                });
             }
         });
 
