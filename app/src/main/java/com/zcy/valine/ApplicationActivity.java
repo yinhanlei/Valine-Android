@@ -15,18 +15,16 @@ import android.widget.Toast;
 
 import com.zcy.valine.activity.ApplicationAddActivity;
 import com.zcy.valine.activity.CommentActivity;
-import com.zcy.valine.activity.CommentEditActivity;
 import com.zcy.valine.activity.LoginActivity;
 import com.zcy.valine.base.BaseActivity;
 import com.zcy.valine.bean.ApplicationBean;
-import com.zcy.valine.config.MyConfig;
 import com.zcy.valine.utils.PermissionsUtils;
 import com.zcy.valine.utils.SerializableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.leancloud.AVOSCloud;
+import static com.zcy.valine.config.MyConfig.currentAppId;
 
 /**
  * Created by yinhanlei on 2020/7/5.
@@ -40,7 +38,7 @@ public class ApplicationActivity extends BaseActivity {
     public static final String appListPath = "/sdcard/valine_application.txt";
     public static List<ApplicationBean> applicationList = new ArrayList<>();
 
-    private Context context;
+    public static Context context;
     private ListView listView_appliaction;
     private TextView btn_add;
     private MyAdapter myAdapter;
@@ -49,7 +47,7 @@ public class ApplicationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_list);
-        context = this;
+        context = ApplicationActivity.this;
         listView_appliaction = findViewById(R.id.listView_appliaction);
         btn_add = findViewById(R.id.btn_add);
         PermissionsUtils.verifyStoragePermissions(ApplicationActivity.this);
@@ -64,17 +62,34 @@ public class ApplicationActivity extends BaseActivity {
         listView_appliaction.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //点击跳转
-                ApplicationBean bean = applicationList.get(i);
-                //                    Log.d(TAG, "id= " + bean.getApplicationId() + "  key= " + bean.getApplicationKey());
-                if (MyConfig.loginMap != null && MyConfig.loginMap.size() > 0 && MyConfig.loginMap.containsKey(bean.getApplicationId()) && MyConfig.loginMap.get(bean.getApplicationId())) {
-                    startActivity(new Intent(context, CommentActivity.class));
-                } else {
-                    AVOSCloud.initialize(bean.getApplicationId(), bean.getApplicationKey());
+                ApplicationBean bean = applicationList.get(i);//将要跳转的
+                if (currentAppId.length() == 0) {
+                    //当前没有登录过
                     Intent it = new Intent(context, LoginActivity.class);
                     it.putExtra("id", bean.getApplicationId());
+                    it.putExtra("key", bean.getApplicationKey());
                     startActivity(it);
+                } else {
+                    //当前有登录
+                    if (currentAppId.equals(bean.getApplicationId())) {
+                        //当前登录的应用是点击的项，去评论页面
+                        startActivity(new Intent(context, CommentActivity.class));
+                    } else {
+                        //当前登录的应用不是点击的项，说明用户可能要切换应用登录，将去登录页面
+                        Intent it = new Intent(context, LoginActivity.class);
+                        it.putExtra("id", bean.getApplicationId());
+                        it.putExtra("key", bean.getApplicationKey());
+                        startActivity(it);
+                    }
                 }
+                //                if (MyConfig.loginMap != null && MyConfig.loginMap.size() > 0 && MyConfig.loginMap.containsKey(bean.getApplicationId()) && MyConfig.loginMap.get(bean.getApplicationId())) {
+                //                    startActivity(new Intent(context, CommentActivity.class));
+                //                } else {
+                //                    Intent it = new Intent(context, LoginActivity.class);
+                //                    it.putExtra("id", bean.getApplicationId());
+                //                    it.putExtra("key", bean.getApplicationKey());
+                //                    startActivity(it);
+                //                }
             }
         });
 
@@ -89,9 +104,6 @@ public class ApplicationActivity extends BaseActivity {
         if (applicationList == null || applicationList.size() == 0) {
             applicationList = new ArrayList<>();
             Toast.makeText(context, "请新增一个应用", Toast.LENGTH_SHORT).show();
-            applicationList.add(new ApplicationBean("测试", "7yIoRlSmfX09vQCERsuWzFnx-MdYXbMMI", "3zCL5GFePTUjwbqLop44QFbr"));
-            applicationList.add(new ApplicationBean("xcy正式", "FIKAgh6n0pUM08JXxhJHChVQ-MdYXbMMI", "RJGiOYFc1fBvfox4frBPpRzU"));
-            SerializableUtils.serializableObjectToFile(applicationList, appListPath);
         } else {
             if (myAdapter == null)
                 myAdapter = new MyAdapter();

@@ -14,20 +14,23 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.zcy.valine.ApplicationActivity;
 import com.zcy.valine.R;
 import com.zcy.valine.base.BaseActivity;
 import com.zcy.valine.config.MyConfig;
 
+import cn.leancloud.AVOSCloud;
 import cn.leancloud.AVUser;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
+import static com.zcy.valine.config.MyConfig.currentAppId;
 import static com.zcy.valine.config.MyConfig.threadPoolExecutor;
 
 /**
  * Created by yinhanlei on 2020/7/5.
+ * 只允许当前登录一个应用。如果要登录下一个应用，则要先把之前登录的账号退出。
  */
-
 public class LoginActivity extends BaseActivity {
 
     private static final String TAG = "LoginActivity";
@@ -40,6 +43,7 @@ public class LoginActivity extends BaseActivity {
     private ImageView btn_umane_del, btn_pwd_del, btn_pwd_del_again, btn_email_del;
     private boolean isClickRegister = false;//ture时，表示是注册页面
     private String id;
+    private String key;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +70,7 @@ public class LoginActivity extends BaseActivity {
         btn_forgetPwd = findViewById(R.id.btn_forgetPwd);
 
         id = getIntent().getStringExtra("id");
+        key = getIntent().getStringExtra("key");
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,9 +84,17 @@ public class LoginActivity extends BaseActivity {
                             Toast.makeText(context, "请填账户密码", Toast.LENGTH_SHORT).show();
                             return;
                         }
-                        //                        final String uName = "me@xaoxuu.com";
-                        //                        final String pwd = "q";
                         Log.d(TAG, "uName= " + uName + "  pwd= " + pwd);
+
+                        //初始化
+                        AVOSCloud.initialize(id, key);
+                        //已登账户将退出
+                        AVUser currentUser = AVUser.getCurrentUser();
+                        if (currentUser != null) {
+                            Log.d(TAG, "已登账户将退出，uName= " + currentUser.getUsername());
+                            AVUser.logOut();
+                        }
+                        //登录当前应用的账号
                         if (uName.contains("@") && uName.contains(".com")) {
                             threadPoolExecutor.execute(new Runnable() {//网络请求都要放进线程
                                 @Override
@@ -92,14 +105,15 @@ public class LoginActivity extends BaseActivity {
 
                                         public void onNext(AVUser user) {
                                             // 登录成功
+                                            currentAppId = id;
                                             Log.d(TAG, "邮箱登录成功");
-                                            MyConfig.loginMap.put(id, true);
                                             handler.post(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+                                            startActivity(new Intent(context, CommentActivity.class));
                                             finish();
                                         }
 
@@ -129,15 +143,16 @@ public class LoginActivity extends BaseActivity {
                                         }
 
                                         public void onNext(AVUser user) {
+                                            currentAppId = id;
                                             // 登录成功
                                             Log.d(TAG, "账户登录成功");
-                                            MyConfig.loginMap.put(id, true);
                                             handler.post(new Runnable() {
                                                 @Override
                                                 public void run() {
                                                     Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
+                                            startActivity(new Intent(context, CommentActivity.class));
                                             finish();
                                         }
 
@@ -185,6 +200,8 @@ public class LoginActivity extends BaseActivity {
                             Toast.makeText(context, "两次密码不一致", Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        //初始化
+                        AVOSCloud.initialize(id, key);
                         threadPoolExecutor.execute(new Runnable() {
                             @Override
                             public void run() {
@@ -244,6 +261,7 @@ public class LoginActivity extends BaseActivity {
                     isClickRegister = true;
                 } else {
                     ll_register_pwd.setVisibility(View.GONE);
+                    ll_register_email.setVisibility(View.GONE);
                     btn_login.setText("登  录");
                     tvBtn_register.setText("注  册");
                     ll_register_service.setVisibility(View.GONE);
