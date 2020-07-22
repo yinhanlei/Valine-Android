@@ -19,6 +19,7 @@ import com.zcy.valine.activity.LoginActivity;
 import com.zcy.valine.base.BaseActivity;
 import com.zcy.valine.bean.ApplicationBean;
 import com.zcy.valine.utils.PermissionsUtils;
+import com.zcy.valine.utils.SDUtils;
 import com.zcy.valine.utils.SerializableUtils;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class ApplicationActivity extends BaseActivity {
 
     private static final String TAG = "ApplicationActivity";
 
-    public static final String appListPath = "/sdcard/valine_application.txt";
+    public static String appListPath = "";
     public static List<ApplicationBean> applicationList = new ArrayList<>();
 
     public static Context context;
@@ -100,6 +101,7 @@ public class ApplicationActivity extends BaseActivity {
         super.onResume();
         if (applicationList.size() > 0)
             applicationList.clear();
+        appListPath = SDUtils.getSDPath() + "/valine_application.txt";
         applicationList = (List<ApplicationBean>) SerializableUtils.getDeserializeObject(appListPath);
         if (applicationList == null || applicationList.size() == 0) {
             applicationList = new ArrayList<>();
